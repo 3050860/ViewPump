@@ -91,14 +91,16 @@ class ViewPumpAppCompatDelegate @JvmOverloads constructor(
                     // WebViews cannot deal with custom resources, so we need to make
                     // sure we use the unwrapped context here.
                     if (name == "WebView") {
-                        view = WebView(getWrappedContext(context), attrs)
+                        view = WebView(getWrappedContext(), attrs)
                     }
 
                     if (view is WebView && name != "WebView") {
                         view = createCustomWebView(view, context, attrs)
                     }
 
-                    view = createDialogWidgetView(context, name, view, attrs)
+                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+                        view = createDialogWidgetView(context, name, view, attrs)
+                    }
 
                     // The framework SearchView needs to be inflated manually,
                     // as it is not inflated by the AppCompatViewInflater
@@ -161,7 +163,7 @@ class ViewPumpAppCompatDelegate @JvmOverloads constructor(
                         it.parameterTypes[1] == AttributeSet::class.java
             }
             ?.newInstance(
-                getWrappedContext(context),
+                getWrappedContext(),
                 attrs
             ) as View?
     }
@@ -176,34 +178,34 @@ class ViewPumpAppCompatDelegate @JvmOverloads constructor(
 
         return when (name) {
             "com.android.internal.widget.AlertDialogLayout" ->
-                AlertDialogLayout(getWrappedContext(context), attrs)
+                AlertDialogLayout(getWrappedContext(), attrs)
 
             "com.android.internal.widget.DialogTitle" ->
-                DialogTitle(getWrappedContext(context), attrs)
+                DialogTitle(getWrappedContext(), attrs)
 
             "com.android.internal.widget.ButtonBarLayout" ->
-                ButtonBarLayout(getWrappedContext(context), attrs)
+                ButtonBarLayout(getWrappedContext(), attrs)
 
             // The following three widgets only exist on Samsung devices with android 9,
             // we replace them with their counterparts from android.widgets
             "CalendarView" ->
-                CalendarView(ContextThemeWrapper(getWrappedContext(context), context.theme), attrs)
+                CalendarView(ContextThemeWrapper(getWrappedContext(), context.theme), attrs)
 
             "DatePicker" ->
-                DatePicker(ContextThemeWrapper(getWrappedContext(context), context.theme), attrs)
+                DatePicker(ContextThemeWrapper(getWrappedContext(), context.theme), attrs)
 
             "NumberPicker" ->
-                NumberPicker(ContextThemeWrapper(getWrappedContext(context), context.theme), attrs)
+                NumberPicker(ContextThemeWrapper(getWrappedContext(), context.theme), attrs)
 
             else -> view
         }
     }
 
-    private fun getWrappedContext(context: Context): Context {
+    private fun getWrappedContext(): Context {
         val wrappedContext = webViewContext
         if (wrappedContext != null) return wrappedContext
 
-        webViewContext = super.attachBaseContext2(WebViewContextWrapper(context))
+        webViewContext = baseDelegate.attachBaseContext2(WebViewContextWrapper(baseContext))
         return webViewContext!!
     }
 }
