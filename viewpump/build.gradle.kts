@@ -4,7 +4,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.library")
-    id("kotlin-android")
     alias(libs.plugins.dokka)
     id("com.vanniktech.maven.publish") version "0.36.0"
 }

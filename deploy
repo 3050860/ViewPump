@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cp -rp ./viewpump/build/outputs/aar/viewpump-release.aar \
+  /home/nk/AndroidStudioProjects/MyApplication/app/libs

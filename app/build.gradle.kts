@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
 }
 
 configure<com.android.build.api.dsl.ApplicationExtension> {
@@ -18,8 +17,13 @@ configure<com.android.build.api.dsl.ApplicationExtension> {
     }
 
     buildTypes {
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+        }
         debug {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
         }
     }
